@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd">
+
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <mongo:db-factory id="mongoDbFactory" host="${mongo.db.server}" port="${mongo.db.port}" dbname="${mongo.db.name}" />
+
+	<mongo:mapping-converter id="mappingConverter">
+		<mongo:custom-converters>
+			<mongo:converter>
+			    <bean class="com.surendra.oauth.dao.converter.OAuth2AuthenticationReadConverter" />
+			</mongo:converter>
+		</mongo:custom-converters>
+	</mongo:mapping-converter>
+    
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+		<constructor-arg name="mongoConverter" ref="mappingConverter"/>
+	</bean>
+	
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+    
+	<bean id="userService" class="com.surendra.oauth.services.impl.UserServiceImpl">
+	    <property name="userDao" ref="userDao"/>
+	    <property name="passwordEncoder" ref="passwordEncoder"/>
+	</bean>
+	
+	<bean id="userDao" class="com.surendra.oauth.dao.impl.UserDaoImpl">
+	    <property name="mongoTemplate" ref="mongoTemplate"/>
+	</bean>
+
+</beans>
