@@ -11,12 +11,12 @@
 		<script src="../assets/js/plugins/angular/angular.min.js"></script>
 	</head>
 	<body ng-controller="oAuthCtrl">
-		<form novalidate class="css-form" name="signupForm">
+		<form class="css-form" name="signupForm">
 		    <div id="container">
-		        <input id="email" type="email" placeholder="Email" ng-model="user.email" required>
-		        <input type="password" id="password" placeholder="Password" ng-model="user.password" required>
+		        <input id="email" type="email" placeholder="Email" ng-model="user.email">
+		        <input type="password" id="password" placeholder="Password" ng-model="user.password">
 		        <input type="password" id="password2" placeholder="Confirm Password">
-		        <input type="text" id="firstName" placeholder="Full Name" ng-model="user.name" required>
+		        <input type="text" id="firstName" placeholder="Full Name" ng-model="user.name">
 		        <input type="checkbox" value="true" name="agree" id="agree">
 		        <label for="agree" id="terms_label">I agree to the <b><a target="_blank">terms of service</a></b>.</label>
 		        <br><br>
@@ -35,22 +35,12 @@
 					$window.location.href = "../user/login";
 				};
 				$scope.signup = function () {
-					RestService.post('../user/userExistForEmail/' + $scope.user.email, {}, 'GET',
+					RestService.post('../user/createUser', $scope.user, 'POST',
 						function(response) {
-							if (response == 'true') {
-								$('#error_message').html('Email address already registered.').show();
-							} else {
-								RestService.post('../user/createUser', $scope.user, 'POST',
-									function(response) {
-										$("#token").val(response.access_token);
-										$window.localStorage.setItem('authToken', response.access_token);
-					                    $("#form").submit();
-									}, function(response) {
-										console.log(response);
-										$('#error_message').html('Error occured, try after some time.').show();
-									}
-								);
-							}
+							var auth = { username : $scope.user.email, password : $scope.user.password };
+							RestService.login(auth, function (response) {
+								$("#token").val(response.access_token); $("#form").submit();
+							});
 						}, function(response) {
 							$('#error_message').html('Error occured, try after some time.').show();
 						}

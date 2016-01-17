@@ -35,5 +35,13 @@ angular.module('oAuth').factory('RestService', ['$window', function($window) {
 		}, error);
 	};
 	
+	factory.logout = function (success) {
+		$window.localStorage.removeItem('authToken');
+		$window.localStorage.removeItem('refreshToken');
+		if (angular.isFunction(success)) {
+			success();
+		}
+	}
+	
 	return factory;
 }]);

@@ -29,8 +29,7 @@
 				$scope.login = function() {
 					RestService.login($scope.user,
 						function(response) {
-							$("#token").val(response.access_token);
-		                    $("#form").submit();
+							$("#token").val(response.access_token); $("#form").submit();
 						}, function(response) {
 							$('#error_message').html('Email and/or password did not match a user account.').show();
 						}

@@ -19,8 +19,6 @@
 		    <div class="section" style="width: 20%; margin: 5px;">
 		        <ul>
 		            <li><a ng-click="userList()">User List</a></li>
-		            <li><a ng-click="user('surendra.nmc@gmail.com')">Surendra Singh</a></li>
-		            <li><a ng-click="user('vsingh.iimt@gmail.com')">Vandana Singh</a></li>
 		        </ul>
 		    </div>
 		</div>

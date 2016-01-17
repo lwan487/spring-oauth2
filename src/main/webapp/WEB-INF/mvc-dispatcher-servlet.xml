@@ -12,11 +12,15 @@
 	<mvc:default-servlet-handler />
 	<mvc:resources mapping="/assets/**" location="/assets/" />
 
+	<!-- Use the LocalValidatorFactoryBean to configure a default JSR-303 Validator as a Spring bean:  -->
+	<bean id="beanValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
 	<bean id="meResource" class="com.surendra.oauth.resources.UserResource">
 		<property name="userService" ref="userService" />
 	</bean>
 
 	<bean id="signup" class="com.surendra.oauth.common.security.UserSignup">
+	    <property name="validator" ref="beanValidator" />
 		<property name="userService" ref="userService" />
 	</bean>
 

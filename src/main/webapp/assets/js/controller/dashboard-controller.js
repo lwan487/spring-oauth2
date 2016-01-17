@@ -4,9 +4,9 @@
 angular.module('oAuth').controller('DashboardCtrl', ['$state', '$scope', '$window', 'RestService', function ($state, $scope, $window, RestService) {
 	
 	$scope.logout = function () {
-		$window.localStorage.removeItem('authToken');
-		$window.localStorage.removeItem('refreshToken');
-		$window.location.href = "../user/login";
+		RestService.logout(function () {
+			$window.location.href = "../user/login";
+		});
 	};
 	
 	if (!!$window.localStorage.getItem('authToken')) {

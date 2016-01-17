@@ -25,7 +25,7 @@ public class UserDaoImpl implements IUserDao {
 	 */
 	@Override
 	public User findByEmailId(String email) {
-		Query query = new Query().addCriteria(new Criteria("emailAddress").is(email));
+		Query query = new Query().addCriteria(new Criteria("email").is(email));
 		return this.mongoTemplate.findOne(query, User.class);
 	}
 

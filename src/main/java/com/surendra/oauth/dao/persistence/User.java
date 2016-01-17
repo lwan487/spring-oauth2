@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,10 +25,16 @@ import com.surendra.oauth.common.enums.Role;
 @SuppressWarnings({"serial", "unchecked"})
 public class User  extends BaseEntity implements UserDetails {
 
+	@NotBlank(message = "User Name is mandatory")
 	private String name;
 	private Integer age;
+	
+	@NotBlank(message = "Password is mandatory")
 	private String password;
-	private String emailAddress;
+	
+	@NotBlank(message = "Email is mandatory")
+	private String email;
+	
 	private List<Role> roles = new ArrayList<Role>();
 
 	public User() {
@@ -40,9 +47,9 @@ public class User  extends BaseEntity implements UserDetails {
 
 	public User(DBObject dbObject) {
 		this((String) dbObject.get("_id"));
-		this.emailAddress = (String) dbObject.get("emailAddress");
+		this.email = (String) dbObject.get("email");
 		this.name = (String) dbObject.get("name");
-		this.password = (String) dbObject.get("hashedPassword");
+		this.password = (String) dbObject.get("password");
 		List<String> roles = (List<String>) dbObject.get("roles");
 		deSerializeRoles(roles);
 	}
@@ -70,8 +77,9 @@ public class User  extends BaseEntity implements UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public String getUsername() {
-		return getId();
+		return getEmail();
 	}
 
 	@Override
@@ -94,10 +102,6 @@ public class User  extends BaseEntity implements UserDetails {
 		return true;
 	}
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -110,16 +114,12 @@ public class User  extends BaseEntity implements UserDetails {
 		this.age = age;
 	}
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setPassword(String hashedPassword) {
-		this.password = hashedPassword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public List<Role> getRoles() {
@@ -130,7 +130,11 @@ public class User  extends BaseEntity implements UserDetails {
 		this.roles.add(role);
 	}
 
-	public boolean hasRole(Role role) {
-		return (this.roles.contains(role));
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
